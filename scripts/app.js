@@ -9,8 +9,8 @@
   // declare the default state
   const defaultState = {
     fetchingApi: false,
-    allocatedLeads: new Map(),
-    myLeads: new Map()
+    allocatedLeads: [...new Map()],
+    myLeads: [...new Map()]
   };
 
   const digitalLeadReducer = ((state=defaultState, action={}) => {
@@ -41,8 +41,8 @@
           state,
           {
             fetchingApi: false,
-            allocatedLeads: _allocatedLeads,
-            myLeads: state.myLeads
+            allocatedLeads: [..._allocatedLeads],
+            myLeads: [...state.myLeads]
           }
         );
         console.log(newState);
@@ -56,8 +56,8 @@
           {},
           state,
           {
-            allocatedLeads: _allocatedLeads,
-            myLeads: state.myLeads
+            allocatedLeads: [..._allocatedLeads],
+            myLeads: [...state.myLeads]
           }
         );
         console.log(newState);
@@ -71,8 +71,8 @@
           {},
           state,
           {
-            allocatedLeads: _allocatedLeads,
-            myLeads: state.myLeads
+            allocatedLeads: [..._allocatedLeads],
+            myLeads: [...state.myLeads]
           }
         );
         console.log(newState);
@@ -88,8 +88,8 @@
           {},
           state,
           {
-            allocatedLeads: _allocatedLeads,
-            myLeads: _myLeads
+            allocatedLeads: [..._allocatedLeads],
+            myLeads: [..._myLeads]
           }
         );
         console.log(newState);
@@ -184,7 +184,7 @@
 
   document.getElementById('timeoutNewLead').addEventListener('click', function() {
     let _allocatedLeads;
-    _allocatedLeads = reduxApp.getDigitalLeadStore().getState().allocatedLeads;
+    _allocatedLeads = new Map(reduxApp.getDigitalLeadStore().getState().allocatedLeads);
 
     // simply retrieve the first element in the map
     if (_allocatedLeads.size > 0) {
@@ -201,7 +201,7 @@
 
   document.getElementById('unlockNewLead').addEventListener('click', function() {
     let _allocatedLeads;
-    _allocatedLeads = reduxApp.getDigitalLeadStore().getState().allocatedLeads;
+    _allocatedLeads = new Map(reduxApp.getDigitalLeadStore().getState().allocatedLeads)
 
     // simply retrieve the first element in the map
     if (_allocatedLeads.size > 0) {
@@ -216,7 +216,6 @@
     }
   });
 
-
   /************************************************************************
    *
    * Code required to start the app
@@ -226,7 +225,10 @@
   // instantiate the redux factory instance to encapsulate direct access of redux store
   let reduxApp = {
     digitalLeadStore: (() => {
-      let store = Redux.createStore(digitalLeadReducer);
+      let store = Redux.createStore(
+        digitalLeadReducer,
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+      );
       store.subscribe(renderPage);
       return store;
     })(),

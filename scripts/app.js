@@ -3,7 +3,7 @@
   console.log("app.js loaded");
 
   const { Observable, from, of } = rxjs;
-  const { map, filter, delay } = rxjs.operators;
+  const { map, filter, delay, take } = rxjs.operators;
 
 
   // declare the default state
@@ -66,7 +66,7 @@
       case 'TIMEOUT':
         console.log("remove lead from state: " + JSON.stringify(payload));
         var _allocatedLeads = new Map(state.allocatedLeads);
-        _allocatedLeads.delete(payload.id, payload);
+        _allocatedLeads.delete(payload.id);
         var newState = Object.assign(
           {},
           state,
@@ -81,7 +81,7 @@
       case 'UNLOCK':
         console.log("complete lead from state: " + JSON.stringify(payload));
         var _allocatedLeads = new Map(state.allocatedLeads);
-        _allocatedLeads.delete(payload.id, payload);
+        _allocatedLeads.delete(payload.id);
         var _myLeads = new Map(state.myLeads);
         _myLeads.set(payload.id, payload);
         var newState = Object.assign(
@@ -161,7 +161,7 @@
       }
     );
 
-    getPushedDigitalLeads().subscribe(
+    getPushedDigitalLeads().pipe(take(1)).subscribe(
       (result) => {
         console.log("rest result: " + JSON.stringify(result));
         reduxApp.dispatch(
